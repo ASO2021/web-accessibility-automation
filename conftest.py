@@ -98,6 +98,16 @@ def driver():
         driver.quit()
 
 
+@pytest.fixture(scope="module")
+def module_driver():
+    """Reutiliza un navegador en suites de smoke tests con varios casos."""
+    raw_driver = _build_driver()
+    try:
+        yield raw_driver
+    finally:
+        raw_driver.quit()
+
+
 @pytest.fixture
 def scan(driver):
     """Escanea la pagina actual con axe, guarda el reporte y devuelve (resultado, resumen)."""

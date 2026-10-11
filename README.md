@@ -13,7 +13,13 @@ Automated tools find only part of the accessibility issues. This project is a fi
 | `test_before_after.py` | Scans an inaccessible page and its fixed version (W3C "Before and After Demonstration"). The fixed page must have fewer problems. |
 | `test_saucedemo_audit.py` | Scans the login and products pages of SauceDemo and creates the reports. |
 | `test_keyboard.py` | Tab order of the login form, and a full login using only the keyboard. |
+| `test_sauce_smoke_suite.py` | 20 high-impact functional and accessibility smoke checks for SauceDemo. |
 | `test_report_unit.py` | Unit tests for the report code. They need no browser. |
+
+The 20-case smoke suite covers login validation, authentication, inventory
+content and sorting, cart updates, product details, checkout, and four focused
+axe-core accessibility checks. It is a high-impact regression sample, not a
+complete functional or WCAG conformance assessment.
 
 ## Project structure
 
@@ -47,6 +53,9 @@ pytest                    # everything
 pytest -m unit            # only tests without browser (fast)
 pytest -m demo            # before and after comparison
 pytest -m keyboard        # keyboard tests
+pytest -m smoke           # all 20 functional and accessibility smoke checks
+pytest -m functional      # functional SauceDemo flows
+pytest -m accessibility   # focused axe-core checks
 pytest --headless         # no browser window
 pytest --browser firefox  # another browser
 pytest --slow-mo 3        # pausa de 3 segundos para ver las acciones y cada prueba
@@ -100,6 +109,7 @@ Every rule links to a page that explains how to fix it.
 
 - axe-core is saved in the repo. The scan does not depend on a CDN, and the version is fixed.
 - The audit tests of SauceDemo do not fail because of violations. Their goal is to produce the report.
+- The 20-case smoke suite combines functional checks with a small set of axe-core accessibility assertions; those accessibility checks do not establish WCAG conformance.
 - The before and after test compares two real pages. It shows that the tool finds problems and sees the improvement.
 - Only WCAG rules run. Extra "best practice" rules are left out to keep the results focused on the standard.
 
