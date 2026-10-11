@@ -1,0 +1,4 @@
+selenium>=4.25
+pytest>=8.3
+pytest-html>=4.1
+openpyxl>=3.1
