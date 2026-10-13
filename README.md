@@ -42,6 +42,7 @@ cd web-accessibility-automation
 python -m venv .venv
 .venv\Scripts\activate             # Mac/Linux: source .venv/bin/activate
 pip install -r requirements.txt
+python -m playwright install chromium
 ```
 
 You need Python 3.10 or higher and Google Chrome.
@@ -59,6 +60,20 @@ pytest -m accessibility   # focused axe-core checks
 pytest --headless         # no browser window
 pytest --browser firefox  # another browser
 pytest --slow-mo 3        # pausa de 3 segundos para ver las acciones y cada prueba
+```
+
+## Juego matemático
+
+Abrí `math_game/index.html` en el navegador para jugar. Cada partida tiene dos
+rondas de 10 cuentas: la primera no tiene límite de tiempo y, al completarla,
+empieza una segunda ronda más difícil con 60 segundos. Cada acierto suma 10
+puntos y puedes volver al inicio durante la partida.
+
+Para instalar Chromium y ejecutar la prueba del juego:
+
+```bash
+python -m playwright install chromium
+pytest tests/test_math_game_playwright.py
 ```
 
 ## Scan any page

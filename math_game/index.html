@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>¡Mente relámpago! | Juego matemático</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background: #f5f6fc;
+      color: #20233f;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: clamp(16px, 4vw, 40px);
+      background:
+        radial-gradient(ellipse at 15% 10%, #e6e2ff 0, transparent 38%),
+        radial-gradient(ellipse at 90% 90%, #dcf7ef 0, transparent 35%),
+        #f5f6fc;
+    }
+
+    main {
+      width: min(100%, 620px);
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid #e3e5f1;
+      border-radius: 30px;
+      background: rgb(255 255 255 / 96%);
+      box-shadow: 0 28px 80px rgb(40 45 91 / 12%);
+      text-align: center;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 16px;
+      place-items: center;
+      border-radius: 18px;
+      background: #eeeaff;
+      color: #5645c2;
+      font-size: 1.8rem;
+      font-weight: 900;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #5645c2;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 7vw, 3rem);
+      letter-spacing: -0.045em;
+    }
+
+    .intro {
+      max-width: 440px;
+      margin: 12px auto 0;
+      color: #5f637c;
+      line-height: 1.65;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 22px 0 18px;
+    }
+
+    .stat {
+      padding: 15px 10px;
+      border: 1px solid #eaebf4;
+      border-radius: 18px;
+      background: #fafaff;
+    }
+
+    .stat-label {
+      display: block;
+      color: #656a82;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.65rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 900;
+    }
+
+    #timer-stat.is-urgent {
+      border-color: #e8a1a1;
+      background: #fff2f1;
+      color: #9b2929;
+    }
+
+    .round-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px;
+      text-align: left;
+    }
+
+    #round-label {
+      margin: 0;
+      color: #303453;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    #progress {
+      color: #5b4bc4;
+      font-size: 0.95rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+    }
+
+    #progress-bar {
+      display: block;
+      width: 100%;
+      height: 9px;
+      margin: 0 0 18px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 999px;
+      background: #ececf5;
+      color: #6554d9;
+      appearance: none;
+    }
+
+    #progress-bar::-webkit-progress-bar {
+      border-radius: 999px;
+      background: #ececf5;
+    }
+
+    #progress-bar::-webkit-progress-value {
+      border-radius: 999px;
+      background: linear-gradient(90deg, #6554d9, #9a73f3);
+      transition: width 180ms ease;
+    }
+
+    #progress-bar::-moz-progress-bar {
+      border-radius: 999px;
+      background: linear-gradient(90deg, #6554d9, #9a73f3);
+    }
+
+    .challenge-panel {
+      min-height: 150px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      margin: 0 0 20px;
+      padding: 20px 14px;
+      border: 1px solid #efeff7;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #fbfaff, #f7f8ff);
+    }
+
+    #difficulty {
+      margin: 0 0 6px;
+      color: #676b83;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    #question {
+      margin: 4px 0 0;
+      color: #242746;
+      font-size: clamp(2.2rem, 9vw, 4rem);
+      font-variant-numeric: lining-nums;
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    #trophy {
+      margin: 0 0 12px;
+      font-size: 3.5rem;
+      line-height: 1;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    input {
+      min-width: 0;
+      flex: 1;
+      padding: 14px 16px;
+      border: 2px solid #d9dbea;
+      border-radius: 15px;
+      background: #fff;
+      color: #20233f;
+      font: inherit;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    input:focus-visible, button:focus-visible {
+      outline: 3px solid #6554d9;
+      outline-offset: 3px;
+    }
+
+    button {
+      min-height: 50px;
+      padding: 13px 20px;
+      border: 0;
+      border-radius: 15px;
+      background: #6554d9;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      transition: background-color 150ms ease, transform 150ms ease;
+    }
+
+    button:hover:not(:disabled) { background: #5141c2; }
+    button:active:not(:disabled) { transform: translateY(1px); }
+    button:disabled { cursor: not-allowed; opacity: 0.58; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    #start-button { width: 100%; }
+
+    #home-button {
+      width: 100%;
+      border: 1px solid #dfe1ee;
+      background: #f5f6fb;
+      color: #303453;
+    }
+
+    #home-button:hover:not(:disabled) { background: #e9ebf5; }
+
+    #feedback {
+      min-height: 2.5em;
+      display: grid;
+      place-items: center;
+      margin: 10px 0 0;
+      padding: 8px 12px;
+      border-radius: 12px;
+      color: #4c506b;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    #feedback.is-correct {
+      background: #eaf8f0;
+      color: #17633b;
+    }
+
+    #feedback.is-incorrect {
+      background: #fff0ed;
+      color: #8c2f25;
+    }
+
+    .hint {
+      margin: 14px 0 0;
+      color: #6b6f85;
+      font-size: 0.85rem;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 480px) {
+      main { border-radius: 24px; }
+      .stats { gap: 8px; }
+      .stat { padding: 12px 6px; }
+      .stat-label { font-size: 0.68rem; }
+      .stat-value { font-size: 1.4rem; }
+      .challenge-panel { min-height: 150px; }
+      form { flex-direction: column; }
+      .actions { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand-mark" aria-hidden="true">∑</div>
+    <p class="eyebrow">Desafío de cálculo mental</p>
+    <h1>¡Mente relámpago!</h1>
+    <p class="intro">Dos rondas de 10 desafíos. La primera es para entrar en ritmo; la segunda, más difícil, va contra reloj.</p>
+
+    <section class="stats" aria-label="Marcador">
+      <div class="stat"><span class="stat-label">Puntos</span><span class="stat-value" id="score">0</span></div>
+      <div class="stat" id="timer-stat"><span class="stat-label" id="time-label">Tiempo</span><span class="stat-value"><span id="time" role="timer" aria-live="off">—</span></span></div>
+      <div class="stat"><span class="stat-label">Racha</span><span class="stat-value" id="streak">0</span></div>
+    </section>
+
+    <section aria-label="Desafío actual">
+      <div class="round-heading">
+        <h2 id="round-label">Ronda 1</h2>
+        <span id="progress">0/10</span>
+      </div>
+      <progress id="progress-bar" max="10" value="0" aria-label="Progreso de la ronda"></progress>
+      <div class="challenge-panel">
+        <p id="difficulty">Cálculo combinado</p>
+        <p id="trophy" role="img" aria-label="Trofeo por completar la partida" hidden>🏆</p>
+        <p id="question" aria-label="Operación matemática">¿Listo?</p>
+      </div>
+      <form id="answer-form" aria-describedby="feedback">
+        <label class="visually-hidden" for="answer">Tu respuesta</label>
+        <input id="answer" type="number" inputmode="numeric" autocomplete="off" placeholder="Escribe el resultado" disabled>
+        <button id="submit-button" type="submit" disabled>Responder</button>
+      </form>
+    </section>
+    <p id="feedback" role="status" aria-live="polite">Pulsa empezar para jugar.</p>
+    <div class="actions">
+      <button id="start-button" type="button">Empezar juego</button>
+      <button id="home-button" type="button" hidden>Volver al inicio</button>
+    </div>
+    <p class="hint">Consejo: también puedes responder con la tecla Enter.</p>
+  </main>
+
+  <script>
+    const form = document.querySelector("#answer-form");
+    const answerInput = document.querySelector("#answer");
+    const submitButton = document.querySelector("#submit-button");
+    const startButton = document.querySelector("#start-button");
+    const homeButton = document.querySelector("#home-button");
+    const question = document.querySelector("#question");
+    const trophy = document.querySelector("#trophy");
+    const roundLabel = document.querySelector("#round-label");
+    const progressDisplay = document.querySelector("#progress");
+    const feedback = document.querySelector("#feedback");
+    const scoreDisplay = document.querySelector("#score");
+    const timeDisplay = document.querySelector("#time");
+    const timeLabel = document.querySelector("#time-label");
+    const timerStat = document.querySelector("#timer-stat");
+    const streakDisplay = document.querySelector("#streak");
+    const progressBar = document.querySelector("#progress-bar");
+    const difficulty = document.querySelector("#difficulty");
+
+    let score = 0;
+    let streak = 0;
+    let round = 1;
+    let answered = 0;
+    let secondsLeft = 60;
+    let correctAnswer = null;
+    let timerId = null;
+    let timerDeadline = null;
+
+    function setFeedback(message, result = "") {
+      feedback.textContent = message;
+      feedback.classList.toggle("is-correct", result === "correct");
+      feedback.classList.toggle("is-incorrect", result === "incorrect");
+    }
+
+    function updateProgress() {
+      progressDisplay.textContent = `${answered}/10`;
+      progressBar.value = answered;
+    }
+
+    function startTimer() {
+      timerDeadline = Date.now() + 60_000;
+      timerId = window.setInterval(() => {
+        secondsLeft = Math.max(0, Math.ceil((timerDeadline - Date.now()) / 1000));
+        timeDisplay.textContent = secondsLeft;
+        timerStat.classList.toggle("is-urgent", secondsLeft <= 10);
+        if (secondsLeft === 0) endGame();
+      }, 250);
+    }
+
+    function randomInteger(minimum, maximum) {
+      return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+    }
+
+    function createQuestion() {
+      const challenge = randomInteger(0, 5);
+      let first;
+      let second;
+      let third;
+      let fourth;
+
+      if (round === 2 && challenge === 0) {
+        first = randomInteger(3, 12);
+        second = randomInteger(2, 8);
+        third = randomInteger(2, 6);
+        fourth = randomInteger(5, 30);
+        question.textContent = `(${first} + ${second}) × ${third} + ${fourth} = ?`;
+        correctAnswer = (first + second) * third + fourth;
+      } else if (round === 2 && challenge === 1) {
+        first = randomInteger(4, 12);
+        second = randomInteger(2, 12);
+        third = randomInteger(2, 9);
+        question.textContent = `${first}² + ${second} × ${third} = ?`;
+        correctAnswer = first ** 2 + second * third;
+      } else if (round === 2 && challenge === 2) {
+        first = randomInteger(3, 8);
+        second = randomInteger(2, 9);
+        third = randomInteger(2, 9);
+        question.textContent = `${first}³ − ${second} × ${third} = ?`;
+        correctAnswer = first ** 3 - second * third;
+      } else if (round === 2 && challenge === 3) {
+        first = randomInteger(4, 15);
+        second = first ** 2;
+        third = randomInteger(3, 12);
+        fourth = randomInteger(2, 8);
+        question.textContent = `√(${second}) × ${third} + ${fourth}² = ?`;
+        correctAnswer = first * third + fourth ** 2;
+      } else if (round === 2 && challenge === 4) {
+        first = randomInteger(3, 10);
+        second = randomInteger(2, 8);
+        third = randomInteger(2, 10);
+        fourth = randomInteger(2, 6);
+        question.textContent = `(${first} × ${second} + ${third}) × ${fourth} = ?`;
+        correctAnswer = (first * second + third) * fourth;
+      } else if (round === 2) {
+        first = randomInteger(3, 10);
+        second = randomInteger(2, 8);
+        third = randomInteger(2, 8);
+        question.textContent = `(${first} + ${second})² − ${third}² = ?`;
+        correctAnswer = (first + second) ** 2 - third ** 2;
+      } else if (challenge === 0) {
+        first = randomInteger(2, 12);
+        second = randomInteger(2, 12);
+        third = randomInteger(2, 9);
+        question.textContent = `(${first} + ${second}) × ${third} = ?`;
+        correctAnswer = (first + second) * third;
+      } else if (challenge === 1) {
+        first = randomInteger(2, 9);
+        second = randomInteger(2, 9);
+        third = randomInteger(2, 9);
+        fourth = randomInteger(2, 9);
+        question.textContent = `${first} × ${second} + ${third} × ${fourth} = ?`;
+        correctAnswer = first * second + third * fourth;
+      } else if (challenge === 2) {
+        first = randomInteger(3, 15);
+        second = randomInteger(2, 30);
+        question.textContent = `${first}² + ${second} = ?`;
+        correctAnswer = first ** 2 + second;
+      } else if (challenge === 3) {
+        first = randomInteger(3, 8);
+        second = randomInteger(10, 40);
+        question.textContent = `${first}³ − ${second} = ?`;
+        correctAnswer = first ** 3 - second;
+      } else if (challenge === 4) {
+        first = randomInteger(2, 15);
+        second = first ** 2;
+        third = randomInteger(2, 30);
+        question.textContent = `√(${second}) + ${third} = ?`;
+        correctAnswer = first + third;
+      } else {
+        first = randomInteger(2, 9);
+        second = randomInteger(2, 9);
+        third = randomInteger(2, 9);
+        fourth = first * third;
+        question.textContent = `(${fourth} × ${second}) ÷ ${first} = ?`;
+        correctAnswer = third * second;
+      }
+    }
+
+    function endGame() {
+      window.clearInterval(timerId);
+      timerId = null;
+      timerDeadline = null;
+      correctAnswer = null;
+      answerInput.disabled = true;
+      submitButton.disabled = true;
+      startButton.disabled = false;
+      startButton.textContent = "Jugar otra vez";
+      trophy.hidden = false;
+      question.textContent = "¡Tiempo!";
+      difficulty.textContent = "Fin de la ronda";
+      setFeedback(`Se acabó el tiempo. Terminaste con ${score} puntos.`);
+      startButton.focus();
+    }
+
+    function startSecondRound() {
+      round = 2;
+      answered = 0;
+      secondsLeft = 60;
+      roundLabel.textContent = "Ronda 2 · Más difícil";
+      difficulty.textContent = "Desafío avanzado";
+      updateProgress();
+      timeDisplay.textContent = secondsLeft;
+      timeLabel.textContent = "Tiempo · 60 s";
+      timerStat.classList.remove("is-urgent");
+      setFeedback("¡Maravilloso! Completaste la primera ronda (10/10). Tienes 60 segundos para la segunda.");
+      createQuestion();
+      answerInput.value = "";
+      answerInput.focus();
+      startTimer();
+    }
+
+    function returnToHome() {
+      window.clearInterval(timerId);
+      timerId = null;
+      score = 0;
+      streak = 0;
+      round = 1;
+      answered = 0;
+      secondsLeft = 60;
+      correctAnswer = null;
+      scoreDisplay.textContent = score;
+      streakDisplay.textContent = streak;
+      timeDisplay.textContent = "—";
+      timeLabel.textContent = "Tiempo";
+      timerStat.classList.remove("is-urgent");
+      roundLabel.textContent = "Ronda 1";
+      updateProgress();
+      difficulty.textContent = "Cálculo combinado";
+      trophy.hidden = true;
+      question.textContent = "¿Listo?";
+      setFeedback("Pulsa empezar para jugar.");
+      answerInput.value = "";
+      answerInput.disabled = true;
+      submitButton.disabled = true;
+      startButton.disabled = false;
+      startButton.textContent = "Empezar juego";
+      homeButton.hidden = true;
+      startButton.focus();
+    }
+
+    startButton.addEventListener("click", () => {
+      score = 0;
+      streak = 0;
+      round = 1;
+      answered = 0;
+      scoreDisplay.textContent = score;
+      streakDisplay.textContent = streak;
+      timeDisplay.textContent = "—";
+      timeLabel.textContent = "Tiempo";
+      timerStat.classList.remove("is-urgent");
+      roundLabel.textContent = "Ronda 1";
+      updateProgress();
+      difficulty.textContent = "Cálculo combinado";
+      trophy.hidden = true;
+      startButton.disabled = true;
+      homeButton.hidden = false;
+      answerInput.disabled = false;
+      submitButton.disabled = false;
+      setFeedback("¡A jugar! Responde las 10 cuentas y pulsa Enter.");
+      createQuestion();
+      answerInput.value = "";
+      answerInput.focus();
+    });
+
+    homeButton.addEventListener("click", returnToHome);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (correctAnswer === null || answerInput.value === "") return;
+
+      if (Number(answerInput.value) === correctAnswer) {
+        score += 10;
+        streak += 1;
+        setFeedback(streak > 1 ? `¡Correcto! Racha de ${streak}. +10 puntos.` : "¡Correcto! +10 puntos.", "correct");
+      } else {
+        streak = 0;
+        setFeedback(`Casi. La respuesta era ${correctAnswer}.`, "incorrect");
+      }
+
+      scoreDisplay.textContent = score;
+      streakDisplay.textContent = streak;
+      answered += 1;
+      updateProgress();
+
+      if (answered === 10) {
+        if (round === 1) {
+          startSecondRound();
+        } else {
+          window.clearInterval(timerId);
+          timerId = null;
+          correctAnswer = null;
+          answerInput.disabled = true;
+          submitButton.disabled = true;
+          startButton.disabled = false;
+          startButton.textContent = "Jugar otra vez";
+          trophy.hidden = false;
+          question.textContent = "¡Completaste el desafío!";
+          difficulty.textContent = "Desafío completado";
+          setFeedback(`¡Maravilloso! Completaste las dos rondas con ${score} puntos.`);
+          startButton.focus();
+        }
+        return;
+      }
+
+      createQuestion();
+      answerInput.value = "";
+      answerInput.focus();
+    });
+  </script>
+</body>
+</html>
